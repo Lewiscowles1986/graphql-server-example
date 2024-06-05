@@ -11,6 +11,17 @@ query AllBooks {
 }
 ```
 
+## Get specific book
+
+```graphql
+query GetSpecificBook($bookId: Int!) {
+  book(id: $bookId) {
+    author
+    title
+  }
+}
+```
+
 ## add a book to the in-memory collection
 
 ```graphql

@@ -1,4 +1,5 @@
 import { ApolloServer } from '@apollo/server';
+import { GraphQLError } from 'graphql';
 import { startStandaloneServer } from '@apollo/server/standalone';
 
 // A schema is a collection of type definitions (hence "typeDefs")
@@ -18,6 +19,7 @@ const typeDefs = `#graphql
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     books: [Book]
+    book(id: Int!): Book
   }
 
   type AddBookMutationResponse {
@@ -48,6 +50,32 @@ const books = [
 const resolvers = {
   Query: {
     books: () => books,
+    book: (a, b, c) => {
+      const { id } = b;
+      console.log("get book", {a, b, c, id});
+      if (id < 1 || id > books.length) {
+        throw new GraphQLError("Not Found", {
+          extensions: {
+            code: "NOT_FOUND",
+            http: {
+              status: 404,
+            }
+          }
+        })
+      }
+      const book = books.at(id - 1);
+      if (!book) {
+        throw new GraphQLError("Not Found", {
+          extensions: {
+            code: "NOT_FOUND",
+            http: {
+              status: 404,
+            }
+          }
+        })
+      }
+      return book;
+    }
   },
   Mutation: {
     addBook: (_, { title, author }) => {
@@ -71,6 +99,7 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  includeStacktraceInErrorResponses: false,
 });
 
 // Passing an ApolloServer instance to the `startStandaloneServer` function:

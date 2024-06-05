@@ -6,9 +6,10 @@ It goes slightly beyond [The Apollo GraphQL Getting Started Guide](https://www.a
 
 ## Usage
 
-There are two operations currently:
+There are three operations currently:
 
 - get all books
+- get specific book
 - create a new book for the collection
 
 ## Running
