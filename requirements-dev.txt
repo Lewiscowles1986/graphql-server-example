@@ -1,0 +1,3 @@
+-r requirements.txt
+strawberry-graphql[debug-server]
+black
